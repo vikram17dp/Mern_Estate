@@ -1,19 +1,22 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {useState} from 'react'
+import { sigInFailure,sigInSuccess,sigInstart } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Signup() {
   const [formData,setFormdata] = useState({});
-  const [loading,setLoading] = useState(false);
-  const [error,setError] = useState(null);
+  // const [loading,setLoading] = useState(false);
+  // const [error,setError] = useState(null);
+  const {error,loading} = useSelector(state =>state.user)
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e)=>{
       setFormdata({...formData,[e.target.id]:e.target.value})
   }
   const onSubmitChange = async(e)=>{
     e.preventDefault();
-    setError(null);
-    setLoading(true)
+    dispatch(sigInstart());
       try {
       const res = await fetch('/api/auth/signup',{
         method:'POST',
@@ -23,18 +26,18 @@ function Signup() {
         body:JSON.stringify(formData),
       })
       const data = await res.json();
-      if(data.success === false){
-        setError(data.message);
-        setLoading(false);
-        return;
+      if(data.success == false){
+        dispatch(sigInFailure(data.message))
+        return
+      } 
+      if(res.ok){
+        dispatch(sigInSuccess(data));
+        navigate('/signin');
       }
-      setLoading(false);
-      setError(null);
-      navigate('/signin');
-      } catch (error) {
-        setLoading(false);
-        setError(error.message)
-      }
+      
+    } catch (error) {
+      dispatch(sigInFailure(error.message))
+    }
       
   }
 
