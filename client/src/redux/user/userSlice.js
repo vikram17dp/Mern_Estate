@@ -15,14 +15,14 @@ const userSlice = createSlice({
         state.loading = true
         state.error = null
     },
-    sigInSuccess : (state,actions)=>{
-        state.currentUser = actions.payload,
+    sigInSuccess : (state,action)=>{
+        state.currentUser = action.payload,
         state.loading = false,
         state.error= null
     },
-    sigInFailure:(state,actions)=>{
+    sigInFailure:(state,action)=>{
         state.loading = false,
-        state.error = actions.payload
+        state.error = action.payload
     }
 }
 })

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { sigInFailure,sigInSuccess,sigInstart } from '../redux/user/userSlice';
 import OAuth from '../compnents/OAuth';
@@ -9,6 +9,10 @@ function Signin() {
   const {loading,error} = useSelector(state=>state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {currentUser} = useSelector(state => state.user);
+  if (currentUser) {
+    return <Navigate to="/profile" />;
+  }
 
 
   const handlechange = (e)=>{
