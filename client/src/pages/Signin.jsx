@@ -10,9 +10,7 @@ function Signin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {currentUser} = useSelector(state => state.user);
-  if (currentUser) {
-    return <Navigate to="/profile" />;
-  }
+  
 
 
   const handlechange = (e)=>{

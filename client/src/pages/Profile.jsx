@@ -1,5 +1,5 @@
 import { useEffect, React, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import app from "../../firebase";
 import {
   getDownloadURL,
@@ -7,14 +7,22 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import {
+  updateInFailure,
+  updateInStart,
+  updateInSuccess,
+} from "../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,loading,error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileuploaderror, setFileuploaderror] = useState(false);
   const [formdata, setFormdata] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
   // console.log(formdata);
   // console.log(filePerc);
   // console.log(fileuploaderror);
@@ -48,13 +56,49 @@ function Profile() {
     }
   }, [file]);
 
+  const handleChange = (e) => {
+    setFormdata({ ...formdata, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // console.log(currentUser);
+    dispatch(updateInStart());
+
+    const userId = currentUser._id;
+    try {
+      const res = await fetch(`/api/user/update/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateInFailure(data.message));
+        return;
+      }
+      if(res.ok){
+        dispatch(updateInSuccess());
+        navigate('/signin');
+      }
+      
+    } catch (error) {
+      dispatch(updateInFailure(error.message));
+    }
+  };
+
   return (
     <div className="max-w-full mx-auto ">
       <h1 className="text-4xl font-semibold  text-center my-14">Profile</h1>
-      <form className="flex flex-col gap-4 sm:w-1/3 sm:mx-auto mr-4 ml-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 sm:w-1/3 sm:mx-auto mr-4 ml-4"
+      >
         <input
           type="file"
           hidden
+          id="file"
           accept="image/*"
           onChange={(e) => setFile(e.target.files[0])}
           ref={fileRef}
@@ -82,11 +126,15 @@ function Profile() {
           placeholder="username"
           id="username"
           className="border p-3 rounded-lg "
+          defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
           className="border p-3 rounded-lg"
+          defaultValue={currentUser.email}
+          onChange={handleChange}
           id="email"
         />
         <input
@@ -94,9 +142,10 @@ function Profile() {
           placeholder="password"
           className="border p-3 rounded-lg"
           id="password"
+          onChange={handleChange}
         />
-        <button className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95">
-          UPDATE
+        <button disabled={loading} className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95">
+          {loading ? 'Loading...':'UPDATE'}
         </button>
         <button className="bg-green-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95 uppercase">
           create listing

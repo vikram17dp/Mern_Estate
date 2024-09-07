@@ -9,8 +9,8 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async(req,res,next)=>{
+ 
     if(req.user.id !== req.params.id) return next(errorHandler(401,'You can only update your account'));
-
     try {
       if(req.body.password){
         req.body.password =  bcrypt.hashSync(req.body.password,10);
@@ -24,7 +24,6 @@ export const updateUser = async(req,res,next)=>{
 
       }
     },{new:true})
-    // console.log(updatedUser);
     
     if(!updateUser){
       return next(errorHandler(404,'User not found'))
