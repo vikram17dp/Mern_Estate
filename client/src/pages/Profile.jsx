@@ -21,6 +21,7 @@ function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileuploaderror, setFileuploaderror] = useState(false);
   const [formdata, setFormdata] = useState({});
+  const [updatedSuccess,setUpdatedSuccess] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()
   // console.log(formdata);
@@ -75,16 +76,20 @@ function Profile() {
       });
       const data = await res.json();
       if (!res.ok) {
-        dispatch(updateInFailure(data.message));
+        dispatch(updateInFailure("Email already in use."));
+        setUpdatedSuccess(false);
         return;
       }
       if(res.ok){
-        dispatch(updateInSuccess());
-        navigate('/signin');
+        dispatch(updateInSuccess(data));
+        setUpdatedSuccess(true);
+        navigate('/profile');
       }
       
     } catch (error) {
       dispatch(updateInFailure(error.message));
+      setUpdatedSuccess(false);
+
     }
   };
 
@@ -157,7 +162,10 @@ function Profile() {
         </span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
+      <p className="text-red-700 mt-5 text-center max-w-full">{error ? error : ''}</p>
+      <p className="text-green-700  text-center max-w-full">{updatedSuccess ? 'user Successfully updated!' : ''}</p>
     </div>
+
   );
 }
 
