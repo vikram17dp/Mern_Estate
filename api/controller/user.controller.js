@@ -1,6 +1,6 @@
 import user from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
-import bcrypt from 'bcryptjs'
+import bcrypt from "bcryptjs";
 
 export const test = (req, res) => {
   res.json({
@@ -8,34 +8,48 @@ export const test = (req, res) => {
   });
 };
 
-export const updateUser = async(req,res,next)=>{
- 
-    if(req.user.id !== req.params.id) return next(errorHandler(401,'You can only update your account'));
-    try {
-      if(req.body.password){
-        req.body.password =  bcrypt.hashSync(req.body.password,10);
+export const updateUser = async (req, res, next) => {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, "You can only update your account"));
+  try {
+    if (req.body.password) {
+      req.body.password = bcrypt.hashSync(req.body.password, 10);
     }
-    const updatedUser = await user.findByIdAndUpdate(req.params.id,{
-      $set:{
-        username:req.body.username,
-        email:req.body.email,
-        password:req.body.password,
-        avatar:req.body.avatar
+    const updatedUser = await user.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
 
-      }
-    },{new:true})
-    
-    if(!updateUser){
-      return next(errorHandler(404,'User not found'))
+    if (!updateUser) {
+      return next(errorHandler(404, "User not found"));
     }
 
-    const {password,...rest} = updatedUser._doc;
+    const { password, ...rest } = updatedUser._doc;
 
     res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    } catch (error) {
-      next(error)
-    }
-
-    
-}
+export const deleteUser = async (req, res, next) => {
+  if (req.user.id !== req.params.id) {
+    return next(errorHandler(401, "You can only update your account"));
+  }
+  try {
+    const userToDelete = await user.findByIdAndDelete(req.params.id);
+    if (!userToDelete) return next(errorHandler(404, "User not found"));
+    res.clearCookie("access_token");
+    res.status(200).json("user deleted succesfully!");
+  } catch (error) {
+    next(error);
+  }
+};

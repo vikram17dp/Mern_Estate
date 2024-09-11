@@ -8,6 +8,9 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import {
+  deleteUserfaliure,
+  deleteUserStart,
+  deleteUserSuccess,
   updateInFailure,
   updateInStart,
   updateInSuccess,
@@ -83,7 +86,7 @@ function Profile() {
       if(res.ok){
         dispatch(updateInSuccess(data));
         setUpdatedSuccess(true);
-        navigate('/profile');
+      
       }
       
     } catch (error) {
@@ -93,6 +96,29 @@ function Profile() {
     }
   };
 
+
+  const handleDelete = async () => {
+    try {
+      const userId = currentUser._id;
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${userId}`, {
+        method: 'DELETE',
+        
+      });
+      const data = await res.json();
+     
+
+      if (!res.ok) {
+        dispatch(deleteUserfaliure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+      navigate('/signin');
+    } catch (error) {
+      dispatch(deleteUserfaliure(error.message));
+    }
+  };
+  
   return (
     <div className="max-w-full mx-auto ">
       <h1 className="text-4xl font-semibold  text-center my-14">Profile</h1>
@@ -157,7 +183,7 @@ function Profile() {
         </button>
       </form>
       <div className="flex  text-center justify-center gap-5 mt-4">
-        <span className="text-red-700 cursor-pointer sm:mr-80 mr-40  ">
+        <span onClick={handleDelete} className="text-red-700 cursor-pointer sm:mr-80 mr-40  ">
           Delete Account
         </span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
