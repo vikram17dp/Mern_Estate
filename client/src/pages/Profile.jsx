@@ -18,7 +18,7 @@ import {
   updateInStart,
   updateInSuccess,
 } from "../redux/user/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {
   const { currentUser,loading,error } = useSelector((state) => state.user);
@@ -196,9 +196,9 @@ const handlesignout = async ()=>{
         <button disabled={loading} className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95">
           {loading ? 'Loading...':'UPDATE'}
         </button>
-        <button className="bg-green-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95 uppercase">
+        <Link to={'/createListing'} className="bg-green-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95 uppercase text-center">
           create listing
-        </button>
+        </Link>
       </form>
       <div className="flex  text-center justify-center gap-5 mt-4">
         <span onClick={handleDelete} className="text-red-700 cursor-pointer sm:mr-80 mr-40  ">

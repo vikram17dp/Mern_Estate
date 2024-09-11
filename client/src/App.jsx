@@ -7,6 +7,7 @@ import Header from './compnents/Header'
 import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import Privateroute from './compnents/Privateroute'
+import CreateListing from './pages/CreateListing'
 
 function App() {
   return (
@@ -17,8 +18,9 @@ function App() {
     <Route path='/about' element={<About/>}/>
     <Route path='/signin' element={<Signin/>}/>
     <Route path='/signup' element={<Signup/>}/>
-    <Route   element={<Privateroute/>}>
+    <Route element={<Privateroute/>}>
     <Route path='/profile' element={<Profile/>}/>
+    <Route path='/createListing' element={<CreateListing/>}/>
 
     </Route>
 
