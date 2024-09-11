@@ -1,6 +1,6 @@
 import Listing from "../models/listing.model.js";
 
-export const listingRouter = async (req, res, next) => {
+export const createListing = async (req, res, next) => {
   try {
     const listing = await Listing.create(req.body);
 
