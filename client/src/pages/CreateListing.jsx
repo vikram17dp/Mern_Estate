@@ -7,6 +7,7 @@ import {
 import React, { useState } from "react";
 import app from "../../firebase";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
@@ -20,7 +21,7 @@ export default function CreateListing() {
     bedrooms: "1",
     bathrooms: "1",
     regularPrice: "50",
-    discountPrice: "50",
+    discountPrice: "0",
     offer: false,
     parking: false,
     furnished: false,
@@ -29,6 +30,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
   console.log(formData);
 
   const handleChangeImage = (e) => {
@@ -60,12 +62,13 @@ export default function CreateListing() {
     e.preventDefault();
     try {
       if (formData.imageUrls.length < 1) {
-        setError("You must upload at least one image");
-        return
+         return setError("You must upload at least one image");
+      
       }
       if (+formData.regularPrice < +formData.discountPrice){
 
-          return setError("Discount price must be lower than the regular price ");
+          setError("Discount price must be lower than the regular price ");
+          return
       }
       setLoading(true);
       setError(false);
@@ -86,6 +89,7 @@ export default function CreateListing() {
       if (res.ok) {
         setError(error.message);
       }
+      navigate(`/listing/${data._id}`)
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -230,11 +234,11 @@ export default function CreateListing() {
               <span>Offer</span>
             </div>
           </div>
-          <div className="flex flex-wrap gap-4 my-4">
+          <div className="flex flex-wrap gap-2 my-4">
             <div className="flex gap-2 items-center">
               <input
                 type="number"
-                className="p-3 border border-gray-600 rounded-lg"
+                className="p-3 w-20 border border-gray-600 rounded-lg"
                 min="1"
                 id="bedrooms"
                 required
@@ -246,7 +250,7 @@ export default function CreateListing() {
             <div className="flex gap-2 items-center">
               <input
                 type="number"
-                className="p-3 border border-gray-600 rounded-lg"
+                className="p-3 w-20 border border-gray-600 rounded-lg"
                 min="1"
                 id="bathrooms"
                 required
@@ -258,7 +262,7 @@ export default function CreateListing() {
             <div className="flex gap-2 items-center">
               <input
                 type="number"
-                className="p-3 border border-gray-600 rounded-lg"
+                className="p-3 w-20 border border-gray-600 rounded-lg"
                 min="100"
                 required
                 id="regularPrice"
@@ -270,11 +274,13 @@ export default function CreateListing() {
                 <span>($ / month)</span>
               </div>
             </div>
-            <div className="flex gap-2 items-center">
+          {formData.offer && (
+              <div className="flex gap-2 items-center">
               <input
                 type="number"
-                className="p-3 border border-gray-600 rounded-lg"
-                min="1"
+                className="p-3 w-20 border border-gray-600 rounded-lg"
+                min="0"
+                max='100000'
                 required
                 id="discountPrice"
                 onChange={handleChange}
@@ -285,6 +291,7 @@ export default function CreateListing() {
                 <span>($ / month)</span>
               </div>
             </div>
+          )}
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-4">
@@ -311,9 +318,8 @@ export default function CreateListing() {
               {uploading ? "Uploading..." : "Upload"}
             </button>
           </div>
-          <p className="text-red-700 text-sm">
-            {imageuploadError && imageuploadError}
-          </p>
+          {error && <p className="text-red-600">{error}</p>}
+
           {formData.imageUrls.length > 0 &&
             formData.imageUrls.map((url, index) => (
               <div key={url} className="flex justify-between">
@@ -334,7 +340,8 @@ export default function CreateListing() {
 
           <button
             type="submit"
-            className="p-3 border bg-gray-700 text-white my-3 uppercase rounded-lg"
+            disabled={loading || uploading}
+            className="p-3 border bg-gray-700 text-white my-3 uppercase rounded-lg hover:opacity-95 disabled:opacity-85"
           >
             {loading ? "Creating..." : "Create Listing"}
           </button>
