@@ -21,16 +21,16 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 
 function Profile() {
-  const { currentUser,loading,error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileuploaderror, setFileuploaderror] = useState(false);
   const [formdata, setFormdata] = useState({});
-  const [updatedSuccess,setUpdatedSuccess] = useState(false);
+  const [updatedSuccess, setUpdatedSuccess] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // console.log(formdata);
   // console.log(filePerc);
   // console.log(fileuploaderror);
@@ -87,90 +87,83 @@ function Profile() {
         setUpdatedSuccess(false);
         return;
       }
-      if(res.ok){
+      if (res.ok) {
         dispatch(updateInSuccess(data));
         setUpdatedSuccess(true);
-      
       }
-      
     } catch (error) {
       dispatch(updateInFailure(error.message));
       setUpdatedSuccess(false);
-
     }
   };
-
 
   const handleDelete = async () => {
     try {
       const userId = currentUser._id;
       dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${userId}`, {
-        method: 'DELETE',
-        
+        method: "DELETE",
       });
       const data = await res.json();
-     
 
       if (!res.ok) {
         dispatch(deleteUserfaliure(data.message));
         return;
       }
       dispatch(deleteUserSuccess(data));
-      navigate('/signin');
+      navigate("/signin");
     } catch (error) {
       dispatch(deleteUserfaliure(error.message));
     }
   };
-  
-const handlesignout = async ()=>{
+
+  const handlesignout = async () => {
     try {
       dispatch(signoutUserStart());
-      const res = await fetch('/api/auth/signout');
+      const res = await fetch("/api/auth/signout");
       const data = await res.json();
-      if(data.success == false){
+      if (data.success == false) {
         dispatch(signoutUserFailure(data.message));
-        return
+        return;
       }
-      dispatch(signoutUserSuccess(data))
+      dispatch(signoutUserSuccess(data));
     } catch (error) {
-      dispatch(signoutUserFailure(error))
+      dispatch(signoutUserFailure(error));
     }
-}
-const handleShowListing = async ()=>{
-      try {
-        setUserListings(false);
-        const res = await fetch(`/api/user/listing/${currentUser._id}`);
-        const data = await res.json();
+  };
+  const handleShowListing = async () => {
+    try {
+      setUserListings(false);
+      const res = await fetch(`/api/user/listing/${currentUser._id}`);
+      const data = await res.json();
 
-        if(data.success == false){
-          setUserListings(true)
-          return
-        }
-        setUserListings(data)
-      } catch (error) {
-        setUserListings(true)
+      if (data.success == false) {
+        setUserListings(true);
+        return;
       }
-}
-
-const handleListingDelete = async(listingId)=>{
-  try {
-    const res = await fetch(`/api/listing/delete/${listingId}`,{
-      method:'DELETE'
-    });
-    const data = await res.json();
-    if(!res.ok){
-      console.log(data.message);
-      return;
-      
+      setUserListings(data);
+    } catch (error) {
+      setUserListings(true);
     }
-    setUserListings((prev)=>prev.filter((listing)=>listing._id !== listingId))
-  } catch (error) {
-      console.log(error.message);
-      
-  }
-}
+  };
 
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+        return;
+      }
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className="max-w-full mx-auto ">
@@ -228,61 +221,87 @@ const handleListingDelete = async(listingId)=>{
           id="password"
           onChange={handleChange}
         />
-        <button disabled={loading} className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95">
-          {loading ? 'Loading...':'UPDATE'}
+        <button
+          disabled={loading}
+          className="bg-slate-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95"
+        >
+          {loading ? "Loading..." : "UPDATE"}
         </button>
-        <Link to={'/createListing'} className="bg-green-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95 uppercase text-center">
+        <Link
+          to={"/createListing"}
+          className="bg-green-700 p-3 rounded-lg text-white hover:opacity-80 disabled:opacity-95 uppercase text-center"
+        >
           create listing
         </Link>
       </form>
       <div className="flex  text-center justify-center gap-5 mt-4">
-        <span onClick={handleDelete} className="text-red-700 cursor-pointer sm:mr-80 mr-40  ">
+        <span
+          onClick={handleDelete}
+          className="text-red-700 cursor-pointer sm:mr-80 mr-40  "
+        >
           Delete Account
         </span>
-        <span onClick={handlesignout} className="text-red-700 cursor-pointer">Sign Out</span>
+        <span onClick={handlesignout} className="text-red-700 cursor-pointer">
+          Sign Out
+        </span>
       </div>
-      <p className="text-red-700 mt-5 text-center max-w-full">{error ? error : ''}</p>
-      <p className="text-green-700  text-center max-w-full">{updatedSuccess ? 'user Successfully updated!' : ''}</p>
+      <p className="text-red-700 mt-5 text-center max-w-full">
+        {error ? error : ""}
+      </p>
+      <p className="text-green-700  text-center max-w-full">
+        {updatedSuccess ? "user Successfully updated!" : ""}
+      </p>
 
+      <button
+        onClick={handleShowListing}
+        className="text-green-700 text-xl  font-semibold  w-full"
+      >
+        show listings
+      </button>
 
-      <button onClick={handleShowListing} className="text-green-700 text-xl  font-semibold  w-full">show listings</button>
-
-      {userListings && userListings.length > 0 &&
-       ( <div className="flex flex-col ">
-        <h1 className="text-2xl font-semibold text-center mt-10">Your Listing</h1>
-        {
-        userListings.map((listing)=>(
-          <div key={listing._id} className=" flex items-center justify-between p-3 border  gap-3 w-[80%] sm:w-[35%] mx-auto mt-10 rounded-lg">
+      {userListings && userListings.length > 0 && (
+        <div className="flex flex-col ">
+          <h1 className="text-2xl font-semibold text-center mt-10">
+            Your Listing
+          </h1>
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className=" flex items-center justify-between p-3 border  gap-3 w-[80%] sm:w-[35%] mx-auto mt-10 rounded-lg"
+            >
               <Link to={`/listing/${listing._id}`}>
-              <img src={listing.imageUrls[0]} alt="listning cover" 
-                className="h-20 w-20 object-contain"
-              />
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listning cover"
+                  className="h-20 w-20 object-contain"
+                />
               </Link>
-  
-              <Link className="text-slate-600 font-semibold hover:underline truncate" to={`/listing/${listing._id}`}>
+
+              <Link
+                className="text-slate-600 font-semibold hover:underline truncate"
+                to={`/listing/${listing._id}`}
+              >
                 <p>{listing.name}</p>
               </Link>
 
               <div className="flex flex-col pr-4 ">
-              <button onClick={()=>handleListingDelete(listing._id)} className="text-red-700 font-semibold uppercase">
-                <p>Delete</p>
-              </button>
-              <button className="text-green-700 font-semibold uppercase">
-                <p>Edit</p>
-              </button>
+                <button
+                  onClick={() => handleListingDelete(listing._id)}
+                  className="text-red-700 font-semibold uppercase"
+                >
+                  <p>Delete</p>
+                </button>
+                <Link to={`/updateListing/${listing._id}`}>
+                  <button className="text-green-700 font-semibold uppercase">
+                    Edit
+                  </button>
+                </Link>
               </div>
-  
-          </div>
-        ))
-        }
-        
-      </div>
-      
-    )
-      } 
-     
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-
   );
 }
 
