@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const  listingSchema = new mongoose.Schema({
-
     name:{
         type:String,
         required:true
@@ -50,10 +49,10 @@ const  listingSchema = new mongoose.Schema({
         type:Array,
         required:true
     },
-    userRef:{
-        type:String,
-        required:true
-    }
+    userRef: {
+        type: String,
+        required: true,
+      },
 },{timestamps:true})
 
 

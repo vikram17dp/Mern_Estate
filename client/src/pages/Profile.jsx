@@ -153,6 +153,23 @@ const handleShowListing = async ()=>{
       }
 }
 
+const handleListingDelete = async(listingId)=>{
+  try {
+    const res = await fetch(`/api/listing/delete/${listingId}`,{
+      method:'DELETE'
+    });
+    const data = await res.json();
+    if(!res.ok){
+      console.log(data.message);
+      return;
+      
+    }
+    setUserListings((prev)=>prev.filter((listing)=>listing._id !== listingId))
+  } catch (error) {
+      console.log(error.message);
+      
+  }
+}
 
 
   return (
@@ -247,7 +264,7 @@ const handleShowListing = async ()=>{
               </Link>
 
               <div className="flex flex-col pr-4 ">
-              <button className="text-red-700 font-semibold uppercase">
+              <button onClick={()=>handleListingDelete(listing._id)} className="text-red-700 font-semibold uppercase">
                 <p>Delete</p>
               </button>
               <button className="text-green-700 font-semibold uppercase">
