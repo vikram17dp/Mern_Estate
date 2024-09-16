@@ -105,9 +105,39 @@ export default function Listing() {
               {listing.address}
             </p>
 
-            {
-                
-            }
+            <div className='flex gap-4'>
+              <p className='bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
+                {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
+              </p>
+              {listing.offer && (
+                <p className='bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
+                  ${+listing.regularPrice - +listing.discountPrice} OFF
+                </p>
+              )}
+            </div>
+            <p className="text-slate-600">
+              <span className="text-semibold text-black">Description -</span>
+              {''}
+              {listing.description}
+            </p>
+            <ul className="text-green-700  font-semibold flex gap-3">
+              <li className="flex gap-2 whitespace-nowrap items-center">
+                <FaBed className="text-lg"/>
+                {listing.bedrooms > 1 ? `${listing.bedrooms} beds `: `${listing.bedrooms} bed`}
+              </li>
+              <li className="flex gap-2 items-center whitespace-nowrap ">
+                <FaBath className="text-lg"/>
+                {listing.bathrooms > 1 ? `${listing.bathrooms} baths`:`${listing.bathrooms} bath`}
+              </li>
+              <li className="flex items-center gap-2 whitespace-nowrap">
+                <FaParking className="text-lg"/>
+                {listing.parking ? "Parking Spot" : ''}
+              </li>
+              <li className="flex items-center gap-2 whitespace-nowrap">
+                <FaChair className="text-lg"/>
+                {listing.furnished  ? 'Furnished ':'UnFurnished'}
+              </li>
+            </ul>
           </div>
         </div>
       )}
