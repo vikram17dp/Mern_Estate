@@ -10,6 +10,7 @@ import Privateroute from './compnents/Privateroute'
 import CreateListing from './pages/CreateListing'
 import UpdateLsitning from './pages/UpdateLsitning'
 import Listing from './pages/Listing'
+import Search from './pages/Search'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
     <Route path='/signin' element={<Signin/>}/>
     <Route path='/signup' element={<Signup/>}/>
     <Route path='/listing/:listingId' element={<Listing/>}/>
+    <Route path='/search' element={<Search/>}/>
     <Route element={<Privateroute/>}>
     <Route path='/profile' element={<Profile/>}/>
     <Route path='/createListing' element={<CreateListing/>}/>
