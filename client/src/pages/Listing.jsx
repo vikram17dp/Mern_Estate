@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {useSelector} from 'react-redux'
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
@@ -15,6 +16,7 @@ import {
   FaParking,
   FaShare,
 } from "react-icons/fa";
+import Contact from "../compnents/Contact";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -23,6 +25,8 @@ export default function Listing() {
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [contact,setContact] = useState(false);
+  const {currentUser} = useSelector((state)=>state.user)
   const params = useParams();
 
   useEffect(() => {
@@ -120,7 +124,7 @@ export default function Listing() {
               {''}
               {listing.description}
             </p>
-            <ul className="text-green-700  font-semibold flex gap-3">
+            <ul className="text-green-700  font-semibold flex gap-2 text-sm">
               <li className="flex gap-2 whitespace-nowrap items-center">
                 <FaBed className="text-lg"/>
                 {listing.bedrooms > 1 ? `${listing.bedrooms} beds `: `${listing.bedrooms} bed`}
@@ -131,13 +135,20 @@ export default function Listing() {
               </li>
               <li className="flex items-center gap-2 whitespace-nowrap">
                 <FaParking className="text-lg"/>
-                {listing.parking ? "Parking Spot" : ''}
+                {listing.parking ? "Parking Spot" : 'No Parking'}
               </li>
               <li className="flex items-center gap-2 whitespace-nowrap">
                 <FaChair className="text-lg"/>
                 {listing.furnished  ? 'Furnished ':'UnFurnished'}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+
+            <button onClick={()=>setContact(true)} className="bg-slate-700 p-3 text-white uppercase rounded-lg hover:opacity-85">
+              contact landlord
+            </button>
+            )}
+             {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}
