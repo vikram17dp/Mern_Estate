@@ -267,7 +267,7 @@ function Profile() {
           {userListings.map((listing) => (
             <div
               key={listing._id}
-              className=" flex items-center justify-between p-3 border  gap-3 w-[80%] sm:w-[35%] mx-auto mt-10 rounded-lg"
+              className=" flex items-center mb-6 justify-between p-3 border  gap-3 w-[80%] sm:w-[35%] mx-auto mt-10 rounded-lg"
             >
               <Link to={`/listing/${listing._id}`}>
                 <img
