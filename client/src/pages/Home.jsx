@@ -57,7 +57,7 @@ function Home() {
         </h1>
         <div>
           <p className="text-gray-500 text-sm sm:text-sm">
-            Sahand Estate will help you find your home fast, easy and
+             EstateEase will help you find your home fast, easy and
             comfortable.
             <br />
             Our expert support are always available.
