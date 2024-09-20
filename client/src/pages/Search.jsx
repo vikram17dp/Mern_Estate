@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function Search() {
   const navigate = useNavigate();
   const location = useLocation()
+  const [loading,setLoading] = useState(false);
+  const [listing,setListing] = useState([]);
   const [sidebardata, setSidebardata] = useState({
     searchTerm: "",
     type: "all",
@@ -15,6 +17,8 @@ export default function Search() {
   });
 
   console.log(sidebardata);
+  console.log(listing);
+  
 
   const handlechange = (e) => {
     if (
@@ -83,10 +87,20 @@ export default function Search() {
         parking: parkingFromUrl === "true" ? true : false,
         furnished: furnishedFromUrl === "true" ? true : false,
         offer: offerFromUrl === "true" ? true : false,
-        sort: sortFromUrl === "created_at",
-        order: orderFromUrl === "desc",
+        sort: sortFromUrl || "created_at",
+        order: orderFromUrl || "desc",
       });
-    }
+}
+const fetchListing = async ()=>{
+    setLoading(true);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`)
+    const data = await res.json();
+    setListing(data)
+    setLoading(false)
+    
+}
+fetchListing();
   },[location.search]);
   return (
     <div className="flex flex-col md:flex-row ml-8 flex-wrap">
