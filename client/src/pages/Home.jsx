@@ -12,7 +12,7 @@ function Home() {
   const [rentlisting, setRentlisting] = useState([]);
   SwiperCore.use([Navigation]);
   // console.log(saleListing);
-  console.log(rentlisting);
+  // console.log(rentlisting);
 
   useEffect(() => {
     const fetchofferListings = async () => {

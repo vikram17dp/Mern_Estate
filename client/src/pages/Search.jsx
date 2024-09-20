@@ -218,7 +218,7 @@ const onShowmoreListings = async ()=>{
                 <option value="createdAt_asc">Oldest</option>
               </select>
             </div>
-            <button className="p-3 bg-slate-700 md:w-full sm:w-[90vw]  rounded-lg my-4 items-center uppercase text-white">
+            <button className="p-3 bg-slate-700 md:w-full sm:w-[90vw] w-[90vw]  rounded-lg my-4 items-center uppercase text-white  ">
               search
             </button>
           </div>
