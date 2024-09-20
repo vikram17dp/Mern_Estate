@@ -7,6 +7,7 @@ export default function Search() {
   const location = useLocation()
   const [loading,setLoading] = useState(false);
   const [listing,setListing] = useState([]);
+  const [showMore,setShowmore] = useState(false)
   const [sidebardata, setSidebardata] = useState({
     searchTerm: "",
     type: "all",
@@ -16,11 +17,6 @@ export default function Search() {
     sort: "created_at",
     order: "desc",
   });
-
-  console.log(sidebardata);
-  console.log(listing);
-  
-
   const handlechange = (e) => {
     if (
       e.target.id === "all" ||
@@ -97,12 +93,31 @@ const fetchListing = async ()=>{
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`)
     const data = await res.json();
+    if(data.length>8){
+      setShowmore(true)
+    }else{
+      setShowmore(false)
+    }
     setListing(data)
     setLoading(false)
     
 }
 fetchListing();
   },[location.search]);
+
+const onShowmoreListings = async ()=>{
+    const numberoflistings = listing.length;
+    const startIndex = numberoflistings;
+    const urlParams = new URLSearchParams();
+    urlParams.set('startIndex',startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if(data.length< 9){
+      setShowmore(false)
+    }
+    setListing([...listing,...data])
+}
   return (
     <div className="flex flex-col md:flex-row ml-8 flex-wrap">
       <div className="py-7 border-b-2 md:border-r-2 md:min-h-screen ">
@@ -221,8 +236,13 @@ fetchListing();
       {loading && (
         <p className="text-slate-700 text-2xl text-center w-full">loading...</p>
       )}
-      {!loading && listing.map((listing)=><ListingItem  key={listing} listing={listing}/>)}
+      {!loading && listing.map((listing)=><ListingItem  key={listing._id} listing={listing}/>)}
       </div>
+      {showMore && (
+        <button onClick={onShowmoreListings} className="text-green-700 text-md text-center hover:underline p-10 w-full ">
+          show more
+        </button>
+      )}
      </div>
     </div>
   );
