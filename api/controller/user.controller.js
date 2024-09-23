@@ -1,5 +1,5 @@
 import Listing from "../models/listing.model.js";
-import User from "../models/user.model.js";
+import  { User } from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcrypt from "bcryptjs";
 
@@ -16,7 +16,7 @@ export const updateUser = async (req, res, next) => {
     if (req.body.password) {
       req.body.password = bcrypt.hashSync(req.body.password, 10);
     }
-    const updatedUser = await user.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
@@ -29,7 +29,7 @@ export const updateUser = async (req, res, next) => {
       { new: true }
     );
 
-    if (!updateUser) {
+    if (!updatedUser) {
       return next(errorHandler(404, "User not found"));
     }
 
@@ -43,7 +43,7 @@ export const updateUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id) {
-    return next(errorHandler(401, "You can only update your account"));
+    return next(errorHandler(401, "You can only delete your account"));
   }
   try {
     const userToDelete = await user.findByIdAndDelete(req.params.id);
