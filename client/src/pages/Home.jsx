@@ -37,7 +37,7 @@ function Home() {
     };
     const fetchRentListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=rent&limit=4");
+        const res = await fetch("/api/listing/get?type=rent&limit=6");
         const data = await res.json();
         setRentlisting(data);
         fetchSaleListings();

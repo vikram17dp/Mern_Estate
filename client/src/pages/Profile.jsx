@@ -31,9 +31,6 @@ function Profile() {
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log(formdata);
-  // console.log(filePerc);
-  // console.log(fileuploaderror);
 
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
@@ -133,7 +130,7 @@ function Profile() {
   };
   const handleShowListing = async () => {
     try {
-      setUserListings(false);
+      setUserListings([]);
       const res = await fetch(`/api/user/listing/${currentUser._id}`);
       const data = await res.json();
 
@@ -246,7 +243,11 @@ function Profile() {
         </span>
       </div>
       <p className="text-red-700 mt-5 text-center max-w-full">
-        {error ? error : ""}
+        {error
+          ? typeof error === "string"
+            ? error
+            : JSON.stringify(error)
+          : ""}
       </p>
       <p className="text-green-700  text-center max-w-full">
         {updatedSuccess ? "user Successfully updated!" : ""}
@@ -259,7 +260,7 @@ function Profile() {
         show listings
       </button>
 
-      {userListings && userListings.length > 0 && (
+      {Array.isArray(userListings) && userListings.length > 0 && (
         <div className="flex flex-col ">
           <h1 className="text-2xl font-semibold text-center mt-10">
             Your Listing
