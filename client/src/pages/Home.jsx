@@ -11,14 +11,15 @@ function Home() {
   const [saleListing, setSalelisting] = useState([]);
   const [rentlisting, setRentlisting] = useState([]);
   SwiperCore.use([Navigation]);
-  // console.log(saleListing);
-  // console.log(rentlisting);
+
 
   useEffect(() => {
     const fetchofferListings = async () => {
       try {
         const res = await fetch("/api/listing/get?offer=true&limit=6");
+
         const data = await res.json();
+
         setOfferlisting(data);
         fetchRentListings();
       } catch (error) {
@@ -36,9 +37,10 @@ function Home() {
     };
     const fetchRentListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=rent&limit=6");
+        const res = await fetch("/api/listing/get?type=rent&limit=4");
         const data = await res.json();
         setRentlisting(data);
+        fetchSaleListings();
       } catch (error) {
         console.log(error);
       }
@@ -57,8 +59,7 @@ function Home() {
         </h1>
         <div>
           <p className="text-gray-500 text-sm sm:text-sm">
-             EstateEase will help you find your home fast, easy and
-            comfortable.
+            EstateEase will help you find your home fast, easy and comfortable.
             <br />
             Our expert support are always available.
           </p>
@@ -109,7 +110,7 @@ function Home() {
               <div className="">
                 <div className="my-3 ml-4">
                   <h2 className="text-3xl text-slate-600 font-semibold ">
-                  Recent places for rent
+                    Recent places for rent
                   </h2>
                   <Link
                     to={"/search?rent=true"}
@@ -119,21 +120,22 @@ function Home() {
                   </Link>
                 </div>
                 <div className="flex flex-wrap ">
-                  {rentlisting && rentlisting.length>0 && rentlisting.map((listing)=>(
-                    <ListingItem key={listing._id} listing={listing}/>
-                  ))}
+                  {rentlisting &&
+                    rentlisting.length > 0 &&
+                    rentlisting.map((listing) => (
+                      <ListingItem key={listing._id} listing={listing} />
+                    ))}
                 </div>
-
               </div>
             )}
-             {/* fetching the sales details over here
-              */}
+            {/* fetching the sales details over here
+             */}
 
-              {saleListing && saleListing.length>0 && (
-                <div className="">
-                  <div className="my-3 ml-4">
+            {saleListing && saleListing.length > 0 && (
+              <div className="">
+                <div className="my-3 ml-4">
                   <h2 className="text-3xl text-slate-600 font-semibold ">
-                  Recent places for sale
+                    Recent places for sale
                   </h2>
                   <Link
                     to={"/search?sale=true"}
@@ -141,15 +143,16 @@ function Home() {
                   >
                     Show more places for sales
                   </Link>
-                  </div>
-                  <div className="flex flex-wrap gap-6">
-                  {saleListing && saleListing.length>0 && saleListing.map((listing)=>(
-                    <ListingItem key={listing._id} listing={listing}/>
-                  ))}
-                  </div>
                 </div>
-              )}
-
+                <div className="flex flex-wrap gap-6">
+                  {saleListing &&
+                    saleListing.length > 0 &&
+                    saleListing.map((listing) => (
+                      <ListingItem key={listing._id} listing={listing} />
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

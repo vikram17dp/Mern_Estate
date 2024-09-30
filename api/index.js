@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import userrouter from './routes/user.route.js'
 import authrouter from "./routes/auth.route.js";
 import listingRouter  from "./routes/listing.route.js";
-import path, { dirname } from 'path'
+import path from 'path'
+import cors from 'cors'
 
 dotenv.config();
 mongoose
@@ -20,6 +21,9 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors())
+
+
 
 app.use(express.static(path.join(__dirname,'/client/dist')));
 
@@ -27,7 +31,7 @@ app.get('*',(req,res)=>{
    res.sendFile(path.join(__dirname,'client','dist','index.html'))
 })
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
@@ -35,7 +39,7 @@ app.listen(PORT, () => {
 
 app.use("/api/user",userrouter)
 app.use("/api/auth",authrouter)
-app.use('/api/listing',listingRouter )
+app.use('/api/listing',listingRouter)
 
 
 app.use((err,req,res,next)=>{

@@ -4,10 +4,10 @@ import ListingItem from "../compnents/ListingItem";
 
 export default function Search() {
   const navigate = useNavigate();
-  const location = useLocation()
-  const [loading,setLoading] = useState(false);
-  const [listing,setListing] = useState([]);
-  const [showMore,setShowmore] = useState(false)
+  const location = useLocation();
+  const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState([]);
+  const [showMore, setShowmore] = useState(false);
   const [sidebardata, setSidebardata] = useState({
     searchTerm: "",
     type: "all",
@@ -79,7 +79,7 @@ export default function Search() {
       orderFromUrl
     ) {
       setSidebardata({
-        searchTerm: searchTermFromUrl || '',
+        searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
         parking: parkingFromUrl === "true" ? true : false,
         furnished: furnishedFromUrl === "true" ? true : false,
@@ -87,37 +87,39 @@ export default function Search() {
         sort: sortFromUrl || "created_at",
         order: orderFromUrl || "desc",
       });
-}
-const fetchListing = async ()=>{
-    setLoading(true);
-    const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/listing/get?${searchQuery}`)
-    const data = await res.json();
-    if(data.length>8){
-      setShowmore(true)
-    }else{
-      setShowmore(false)
     }
-    setListing(data)
-    setLoading(false)
-    
-}
-fetchListing();
-  },[location.search]);
+    const fetchListing = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      
+      const data = await res.json();
+      setListing(Array.isArray(data) ? data : []);
+      if (data.length > 8) {
+        setShowmore(true);
+      } else {
+        setShowmore(false);
+      }
+      setListing(data);
+      setLoading(false);
+    };
+    fetchListing();
+  }, [location.search]);
 
-const onShowmoreListings = async ()=>{
+  const onShowmoreListings = async () => {
     const numberoflistings = listing.length;
     const startIndex = numberoflistings;
     const urlParams = new URLSearchParams();
-    urlParams.set('startIndex',startIndex);
+    urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
     const res = await fetch(`/api/listing/get?${searchQuery}`);
     const data = await res.json();
-    if(data.length< 9){
-      setShowmore(false)
+    setListing([...listing, ...(Array.isArray(data) ? data : [])]);
+    if (data.length < 9) {
+      setShowmore(false);
     }
-    setListing([...listing,...data])
-}
+    setListing([...listing, ...data]);
+  };
   return (
     <div className="flex flex-col md:flex-row ml-8 flex-wrap">
       <div className="py-7 border-b-2 md:border-r-2 md:min-h-screen ">
@@ -229,21 +231,27 @@ const onShowmoreListings = async ()=>{
         <h1 className="text-4xl p-3 font-semibold text-slate-700 mt-5">
           Lisiting Results:
         </h1>
-     <div className="pt-5 flex flex-wrap">
-     {!loading && listing.length ===0 &&(
-       <p className="text-xl pl-4 text-slate-700">No Listing is found!</p>
-      )}
-      {loading && (
-        <p className="text-slate-700 text-2xl text-center w-full">loading...</p>
-      )}
-      {!loading && listing.map((listing)=><ListingItem  key={listing._id} listing={listing}/>)}
+        <div className="pt-5 flex flex-wrap">
+          {!loading && Array.isArray(listing) && listing.length === 0 && (
+            <p className="text-xl pl-4 text-slate-700">No Listing is found!</p>
+          )}
+
+          {!loading &&
+            Array.isArray(listing) &&
+            listing.map((item) => (
+              <ListingItem key={item._id} listing={item} />
+            ))}
+        </div>
+
+        {showMore && (
+          <button
+            onClick={onShowmoreListings}
+            className="text-green-700 text-md text-center hover:underline p-10 w-full "
+          >
+            show more
+          </button>
+        )}
       </div>
-      {showMore && (
-        <button onClick={onShowmoreListings} className="text-green-700 text-md text-center hover:underline p-10 w-full ">
-          show more
-        </button>
-      )}
-     </div>
     </div>
   );
 }
