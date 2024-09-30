@@ -23,9 +23,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors())
 
-
-
-
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
 app.get('*', (req, res) => {
@@ -41,7 +38,6 @@ app.listen(PORT, () => {
 app.use("/api/user",userrouter)
 app.use("/api/auth",authrouter)
 app.use('/api/listing',listingRouter)
-
 
 app.use((err,req,res,next)=>{
   const statusCode = err.statusCode || 500;
