@@ -116,22 +116,23 @@ function Profile() {
 
   const handlesignout = async () => {
     try {
-      dispatch(signoutUserStart());
-      const res = await fetch("/api/auth/signout", {
-        method: "POST",
-        credentials: 'include'
-      });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(signoutUserFailure(data.message));
-        return;
-      }
-      dispatch(signoutUserSuccess());
-      navigate('/signin')
+        dispatch(signoutUserStart());
+        const res = await fetch("/api/auth/signout", {
+            method: "POST",
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success === false) {
+            dispatch(signoutUserFailure(data.message));
+            return;
+        }
+        dispatch(signoutUserSuccess());
+        navigate('/signin');
     } catch (error) {
-      dispatch(signoutUserFailure(error.message));
+        dispatch(signoutUserFailure(error.message));
     }
-  };
+};
+
   const handleShowListing = async () => {
     try {
       setUserListings([]);
