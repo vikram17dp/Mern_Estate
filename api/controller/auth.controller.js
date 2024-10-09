@@ -39,7 +39,7 @@ export const signin = async (req, res, next) => {
     if (!validuser) {
       return next(errorHandler(400, "User not found!"));
     }
-    const validpassword = bcrypt.compareSync(password, validuser.password);
+    const validpassword = bcrypt.compare(password, validuser.password);
 
     if (!validpassword) {
       return next(errorHandler(400, "Invalid password!"));
@@ -82,7 +82,7 @@ export const google = async (req, res, next) => {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
-      const hashedpassword = bcrypt.hashSync(generatedPassword, 10);
+      const hashedpassword = bcrypt.hash(generatedPassword, 10);
       const newUser = new User({
         username:
           req.body.name.split(" ").join("").toLowerCase() +

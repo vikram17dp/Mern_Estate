@@ -117,15 +117,19 @@ function Profile() {
   const handlesignout = async () => {
     try {
       dispatch(signoutUserStart());
-      const res = await fetch("/api/auth/signout");
+      const res = await fetch("/api/auth/signout", {
+        method: "POST",
+        credentials: 'include'
+      });
       const data = await res.json();
-      if (data.success == false) {
+      if (data.success === false) {
         dispatch(signoutUserFailure(data.message));
         return;
       }
-      dispatch(signoutUserSuccess(data));
+      dispatch(signoutUserSuccess());
+      navigate('/signin')
     } catch (error) {
-      dispatch(signoutUserFailure(error));
+      dispatch(signoutUserFailure(error.message));
     }
   };
   const handleShowListing = async () => {
