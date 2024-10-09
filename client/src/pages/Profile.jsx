@@ -117,10 +117,7 @@ function Profile() {
   const handlesignout = async () => {
     try {
         dispatch(signoutUserStart());
-        const res = await fetch("/api/auth/signout", {
-            method: "POST",
-            credentials: 'include'
-        });
+        const res = await fetch("/api/auth/signout");
         const data = await res.json();
         if (data.success === false) {
             dispatch(signoutUserFailure(data.message));
