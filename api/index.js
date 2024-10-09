@@ -23,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors())
 
+<<<<<<< HEAD
 
 
 
@@ -31,6 +32,12 @@ app.use(express.static(path.join(__dirname, '/client/dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
+=======
+app.use(express.static(path.join(__dirname, 'client','dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
+>>>>>>> origin/main
 
 const PORT = 3000;
 app.listen(PORT, () => {
@@ -41,7 +48,6 @@ app.listen(PORT, () => {
 app.use("/api/user",userrouter)
 app.use("/api/auth",authrouter)
 app.use('/api/listing',listingRouter)
-
 
 app.use((err,req,res,next)=>{
   const statusCode = err.statusCode || 500;
